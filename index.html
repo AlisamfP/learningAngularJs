@@ -4,7 +4,11 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     	<script type="text/javascript" src="angular.min.js"></script>
     	<script type="text/javascript" src="app.js"></script></head>
-<body ng-controller = "StoreController as store">
+    <header>
+      <h1 class="text-center">Flatlander Crafted Gems</h1>
+      <h2 class="text-center"> - an Angular store - </h2>
+    </header>
+<body ng-controller = "StoreController as store" style="padding: 10px 200px 200px 200px">
     <!-- Product Container -->
     <div class="list-group">
     <div class="list-group-item" ng-repeat="product in store.products">
@@ -12,31 +16,35 @@
                 <em class="pull-right">{{product.price | currency}}</em>
             </h3>
             <!-- Image Gallery -->
-            <div class="gallery" ng-show="product.images.length">
-                <img class="img img-circle img-thumbnail center-block" ng-src="{{product.images[0]}}" />
-                <ul class='clearfix'>
-                    <li class="small-image pull-left thumbnail" ng-repeat="image in product.images">
-                        <img ng-src="{{image}}" />
-                    </li>
-                </ul>
-            </div>
-    <section ng-init="tab = 1">
-        <ul class="nav-nav-pills">
-            <li> <a href ng-click="tab = 1"> Decscription</a></li>
-            <li> <a href ng-click="tab = 2"> Specifications</a></li>
-            <li> <a href ng-click="tab = 3"> Reviews</a></li>
+      <section ng-show="product.images.length" ng-controller="GalleryController as gallery">
+        <img ng-src="{{product.images[gallery.current]}}" />
+        <ul class="list-inline thumbs">
+          <li class="thumbnail" ng-repeat="image in product.images">
+            <img ng-src="{{image}}" style="width: 20%;height: 20%"/>
+          </li>
         </ul>
-        <div class="panel" ng-show="tab === 1">
+      </section>
+      <!-- Tab Container -->
+    <section ng-controller="PanelController as panel">
+        <ul class="nav nav-pills">
+            <li ng-class="{ active: panel.isSelected(1) }">
+             <a href ng-click="panel.selectTab(1)"> Decscription</a></li>
+            <li ng-class="{ active: panel.isSelected(2) }">
+             <a href ng-click="panel.selectTab(2)"> Shine</a></li>
+            <li ng-class="{ active: panel.isSelected(3) }">
+             <a href ng-click="panel.selectTab(3)"> Reviews</a></li>
+        </ul>
+        <div class="panel" ng-show="panel.isSelected(1)">
             <h4> Description </h4>
-            <p>{{product.description}}</p>
+            <blockquote>{{product.description}}</blockquote>
         </div>
-        <div class="panel" ng-show="tab === 2">
-            <h4> Specifications </h4>
-            <blockquote>Coming soon...</blockquote>
+        <div class="panel" ng-show="panel.isSelected(2)">
+            <h4> Shine </h4>
+            <blockquote>{{product.shine}}</blockquote>
         </div>
-        <div class="panel" ng-show="tab === 3">
+        <div class="panel" ng-show="panel.isSelected(3)">
             <h4> Reviews </h4>
-            <blockquote>None yet...</blockquote>
+            <blockquote ng-repeat="review in product.reviews">{{review.body}} - {{review.author}}</blockquote>
         </div>
     </section>
     </div>
